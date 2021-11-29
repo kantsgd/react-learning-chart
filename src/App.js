@@ -37,7 +37,7 @@ let chartData = {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: chartData };
+    this.state = { data: chartData, monthsFirst: 0, monthsSecond: 4 };
 
     this.handleChange = this.handleChange.bind(this);
   }
@@ -48,13 +48,18 @@ export default class App extends React.Component {
 
     let updatedData = {...chartData};
 
-    if(selectName === "months2") {
-      updatedData.labels = updatedData.labels.slice(0, selectedValue+1);
-      updatedData.datasets[0].data.slice(0, selectedValue+1);
+    if ((selectName === "months" && this.state.monthsSecond >= selectedValue)) {
+      updatedData.labels = updatedData.labels.slice(selectedValue, this.state.monthsSecond+1);
+      updatedData.datasets[0].data.slice(selectedValue, this.state.monthsSecond + 1);
 
-      this.setState({data: updatedData});
+      this.setState({data: updatedData, monthsFirst: selectedValue});
     }
+    else if ((selectName === "months2" && this.state.monthsFirst <= selectedValue) ) {
+      updatedData.labels = updatedData.labels.slice(this.state.monthsFirst, selectedValue+1);
+      updatedData.datasets[0].data.slice(this.state.monthsFirst, selectedValue+1);
 
+      this.setState({data: updatedData, monthsSecond: selectedValue});
+    }
   }
 
   render() {
